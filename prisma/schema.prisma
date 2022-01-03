@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model roles {
+  id          Int          @id @default(autoincrement())
+  customer_id Int?         @unique(map: "roles_customer_id")
+  admin_id    Int?         @unique(map: "roles_admin_id")
+  roles       String       @db.VarChar(255)
+  tbladmin    tbladmin?    @relation(fields: [admin_id], references: [admin_id], onDelete: Restrict, onUpdate: Restrict, map: "roles_ibfk_2")
+  tblcustomer tblcustomer? @relation(fields: [customer_id], references: [customer_id], onDelete: Restrict, onUpdate: Restrict, map: "roles_ibfk_1")
+}
+
+model sleek_products {
+  product_id   Int    @id @default(autoincrement())
+  product_name String @db.VarChar(255)
+  price        Float
+  quantity     Int
+}
+
+model tbladdress {
+  address_id  Int         @id @default(autoincrement())
+  customer_id Int         @unique(map: "tbladdress_customer_id")
+  fullname    String      @db.VarChar(255)
+  phonenumber String      @db.VarChar(255)
+  region      String      @db.VarChar(255)
+  province    String      @db.VarChar(255)
+  city        String      @db.VarChar(255)
+  barangay    String      @db.VarChar(255)
+  zipcode     String      @db.VarChar(255)
+  street      String      @db.VarChar(255)
+  tblcustomer tblcustomer @relation(fields: [customer_id], references: [customer_id], onUpdate: Restrict, map: "tbladdress_ibfk_1")
+}
+
+model tbladmin {
+  admin_id              Int    @id @default(autoincrement())
+  full_name             String @db.VarChar(50)
+  contact               String @db.VarChar(15)
+  email_address         String @db.VarChar(50)
+  password              String @db.VarChar(500)
+  roles                 String @default("Admin") @db.VarChar(255)
+  roles_rolesTotbladmin roles?
+}
+
+model tblcart {
+  cart_id     Int         @id @default(autoincrement())
+  customer_id Int
+  prod_id     Int
+  quantity    Int
+  tblcustomer tblcustomer @relation(fields: [customer_id], references: [customer_id], onUpdate: Restrict, map: "tblcart_ibfk_1")
+  tblproduct  tblproduct  @relation(fields: [prod_id], references: [prod_id], onUpdate: Restrict, map: "tblcart_ibfk_2")
+}
+
+model tblcustomer {
+  customer_id       Int          @id @default(autoincrement())
+  customer_fname    String       @db.VarChar(255)
+  customer_lname    String       @db.VarChar(255)
+  customer_email    String?      @db.VarChar(255)
+  customer_password String?      @db.VarChar(255)
+  customer_contact  String?      @db.VarChar(15)
+  customer_img      String?      @db.VarChar(255)
+  customer_position String?      @db.VarChar(255)
+  customer_area     String?      @db.VarChar(255)
+  account_status    String       @default("Active") @db.VarChar(255)
+  auth_id           String?      @db.VarChar(255)
+  roles             roles?
+  tbladdress        tbladdress?
+  tblcart           tblcart[]
+  tblorders         tblorders[]
+  tblratings        tblratings[]
+}
+
+model tblorderdetails {
+  order_details Int        @id @default(autoincrement())
+  order_id      String     @unique @db.VarChar(255)
+  prod_id       Int
+  quantity      Int
+  prod_amount   Int
+  message       String?    @db.VarChar(500)
+  created_at    DateTime   @default(now()) @db.Timestamp(0)
+  tblorders     tblorders  @relation(fields: [order_id], references: [order_id], onUpdate: Restrict, map: "tblorderdetails_ibfk_1")
+  tblproduct    tblproduct @relation(fields: [prod_id], references: [prod_id], onUpdate: Restrict, map: "tblorderdetails_ibfk_2")
+}
+
+model tblorders {
+  order_id        String           @id @db.VarChar(255)
+  customer_id     Int
+  order_date      DateTime         @default(now()) @db.Timestamp(0)
+  total_amount    Int
+  order_status    String           @default("Pending") @db.VarChar(255)
+  confirm_date    DateTime?        @db.Date
+  ship_date       DateTime?        @db.Date
+  received_date   DateTime?        @db.Date
+  tblcustomer     tblcustomer      @relation(fields: [customer_id], references: [customer_id], onUpdate: Restrict, map: "tblorders_ibfk_1")
+  tblorderdetails tblorderdetails?
+}
+
+model tblproduct {
+  prod_id         Int               @id @default(autoincrement())
+  prod_name       String            @db.VarChar(100)
+  price           Float
+  prod_qty        Int
+  prod_img        String            @db.VarChar(155)
+  prod_details    String            @db.VarChar(500)
+  prod_categories String            @db.VarChar(255)
+  expiration      DateTime          @db.Date
+  created_at      DateTime          @default(now()) @db.Timestamp(0)
+  prod_status     String            @db.VarChar(50)
+  tblcart         tblcart[]
+  tblorderdetails tblorderdetails[]
+  tblratings      tblratings[]
+}
+
+model tblratings {
+  rating_id     Int          @id @default(autoincrement())
+  prods_id      Int
+  score         Int          @default(0)
+  remarks       String?      @db.VarChar(255)
+  date_recorded DateTime?    @default(now()) @db.Timestamp(0)
+  customers_id  Int?
+  tblcustomer   tblcustomer? @relation(fields: [customers_id], references: [customer_id], onDelete: Restrict, onUpdate: Restrict, map: "tblratings_ibfk_1")
+  tblproduct    tblproduct   @relation(fields: [prods_id], references: [prod_id], onUpdate: Restrict, map: "tblratings_ibfk_2")
+}

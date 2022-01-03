@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('../partials/head'); %>
+  <body>
+    <%- include('../partials/header'); %>
+
+    <section class="container card p-5" style="margin-top: 150px;">
+      <div class="row justify-content-start align-items-center mb-3 home-tab">
+          <a href="/sleekskincare" style="margin-right: 1rem;">Home</a>
+          <span><i class="bx bxs-chevrons-right"></i></span>
+          <span style="margin-left: 1rem; word-wrap: break-word;"><%=products.prod_name %></span>
+      </div>
+      <div class="row justify-content-between align-items-start product-detail">
+          <div class="col-xs-12 col-sm-12 col-md-7 p-0">
+              <img
+                  src="/products/<%=products.prod_img%>"
+                  alt="<%=products.prod_img%>"
+                  style="width: 100%; height: 400px; object-fit: cover;"
+                  color="#A29596"
+              />
+          </div>
+          <form class="col-xs-12 col-sm-12 col-md-5 mt-3" action="/sleekskincare/product-details/cart/<%=products.prod_id%>" method="post">
+
+              <div class="flex-column justify-content-start product-data" style="width: 100%;">
+                  <span class="data__subtitle">Sleek</span> 
+
+                  <% let title = products.prod_name %>  
+
+                  <h1 class="data__title" style="font-size: 1.3rem; margin-bottom: 1rem; width: 100%; word-wrap: break-word;"><%= title %></h1>
+                  <div class="read-more-container" style="width: 100%;">   
+
+                    <% let firstDetails = products.prod_details %>    
+
+                      <p style="word-wrap: break-word;">                 
+                          <%= firstDetails.slice(0, 100)%> <span class="read-more-text">
+                          <%=firstDetails.slice(100)%>
+                        </span>
+                      </p>
+                      <span class="read-more-btn">Read More...</span>         
+                  </div>
+              </div>
+
+              <div class="d-flex justify-content-between actions" style="margin-top: 4rem">
+                  <!-- ===== SIZE ===== -->
+                  <div class="flex-column align-items-center size">
+                      <h3 class="size__title">Stock</h3>
+                      <div class="size__content">
+                          <span style="font-size: 0.8rem; text-align: start;"><%= products.prod_qty%></span>
+                      </div>
+                  </div>
+             
+                  <!-- ===== CANT ===== -->
+                  <div class="flex-column align-items-center cant">
+                      <h3 class="cant__title">Quantity</h3>
+                      <div class="quantity">
+                          <input type="text" value="<%=products.price%>" name="price" hidden>
+                          <button class="btn minus-btn disabled" type="button" style="font-size: 1rem;"><i class="fas fa-minus"></i></button>
+                          <input type="text" id="quantity" value="1" name="quantity" autocomplete="off">
+                          <button class="btn plus-btn" type="button" style="font-size: 1rem;"><i class="fas fa-plus"></i></button>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="d-flex justify-content-between mt-4">
+
+                  <%let maybawas = 0; %>
+                  <%if(user.customer_position == "Distributor"){%>
+                      <%maybawas =products.price - (products.price * 0.2) %>
+                      <span class="preci__title">₱<%= maybawas%></span>
+                  <%} else {%>
+                      <%maybawas =products.price - (products.price * 0.1) %>
+                      <span class="preci__title">₱<%= maybawas%></span>
+                  <%} %>
+                 
+                  <button type="submit" class="preci__button" >Add To Cart</button>
+              </div>
+          </form>
+      </div>
+  </section>
+
+    <section class="container card customer-reviews p-3" style="margin-top: 20px;">
+      <div class="row justify-content-between align-items-end reviews2">
+          <div class="col-xs-12 col-sm-12 col-md-3 p-0">
+              <h5 style="text-align: center">Customer Reviews</h5>
+              <% if (Number.isNaN(Math.floor(products.No_Of_Reviews / (products.Total_No_Of_Reviews - 1)))) { %> 
+                <div class="rate-stars" style="display: flex; justify-content: center; font-size: 1.5rem;">
+                <% for(let i =0; i < 5; i++){ %>
+                    <i class="bx bxs-star"></i>
+                <% } %>
+                </div>
+                <p style="text-align: center">0 rating</p>
+              <% } else { %>
+                <% let totalReviews = products.Total_No_Of_Reviews; %>
+                <% let rate = Math.floor(products.No_Of_Reviews / totalReviews); %>
+                
+                <div class="rate-stars" style="display: flex; justify-content: center; font-size: 1.5rem;">
+
+                <% for(let i = 0; i < rate; i++){ %>
+                  <i class="bx bxs-star"></i>
+                <% } %> 
+                
+                <% let rateForNoColor = 5 - rate %> <% for(let i =0; i < rateForNoColor; i++){ %>
+                  <i class="bx bxs-star nocolor"></i>
+                <% } %>
+
+                </div>
+                <p style="text-align: center"><%=totalReviews%> ratings</p>
+              <% } %>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-5 p-0">
+              <h6 style="text-align: center">View Reviews</h6>
+              <div class="tabs_wrap">
+                  <ul>
+                    <li data-tabs="all" class="active">All</li>
+                    <li data-tabs="five">5 Star</li>
+                    <li data-tabs="four">4 Star</li>           
+                    <li data-tabs="three">3 Star</li>
+                    <li data-tabs="two">2 Star</li>
+                    <li data-tabs="one">1 Star</li>
+                  </ul>
+                </div>
+          </div>
+      </div>
+      <div class="rows justify-content-around align-items-start">
+
+          <% for(let i = 0; i < comment.length; i++){ %>
+
+            <div class="col-xs-12 col-sm-12 col-md-6 p-3 card">
+              <div class="row align-items-center justify-content-center">
+                  <div class="col-sm-3 profile-img">
+                    <% const imageURL = comment[i].tblcustomer.customer_img; %> 
+                    <% if (imageURL != null) { %> 
+                      <img src="/profiles/<%=imageURL%>" alt="<%=imageURL%>"/>
+                    <% } else { %> 
+                      <img src="/profiles/dummyProfile.png" alt="/profiles/dummyProfile.png"/>
+                    <% } %> 
+                  </div>
+                  <div class="col-sm-9">
+                      <p style="padding: 0; margin: 0;"><strong><%= comment[i].tblcustomer.customer_fname%> <%= comment[i].tblcustomer.customer_lname%></strong></p>
+                      <p style="font-size: 0.7rem; padding: 0; margin: 0;"><%= comment[i].tblcustomer.customer_position %></p>
+                      <div class="rate-stars" style="display: flex; justify-content: start; font-size: 0.7rem;">
+                        <% const rateScore = comment[i].score; %> 
+                        <% for(let i = 0; i < rateScore; i++){ %>
+                          <i class="bx bxs-star"></i>
+                        <% } %> 
+                        
+                        <% let rateForNoColor = 5 - rateScore %> <% for(let i =0; i < rateForNoColor; i++){ %>
+                          <i class="bx bxs-star nocolor"></i>
+                        <% } %>
+                      </div>
+                    
+                      <p style="font-size: 0.7rem; margin-top: 0.7rem;"><%=comment[i].remarks%></p>
+                  </div>
+              </div>
+            </div>
+
+          <% } %>
+      </div>
+  </section>
+
+
+         <!-- -- ======== Start Related Products ======= -- -->
+         <section class="container all-products">
+          <div class="section-title">
+              <h2>Related <span>Products</span></h2>
+          </div>
+          <div class="row justify-content-start align-items-start all-products-grid">
+              <% if (related.length > 0) { %> <% for(let i = 0; i < related.length; i++){ %>
+    
+                  <div class="col-xs-6 col-sm-6 col-md-2 p-2 card" style="width: 100%;">
+                      <a href="/sleekskincare/product-details/<%= related[i].prod_id %>">
+                          <img class="card-img-top" src="/products/<%=related[i].prod_img%>" alt="Card image cap">
+                      </a>
+                      <div class="card-body">
+                          <p class="offer-title"><%= related[i].prod_name%></p>
+    
+                          <% if (user.customer_position == "Distributor") { %> <% let disPrice =related[i].price - (related[i].price * 0.20) %>
+                              <p class="offer-price">₱<%= disPrice %>  <span>₱<%=related[i].price %></span></p>
+                          <% } else { %> <% let sePrice =related[i].price - (related[i].price * 0.10) %>
+                              <p class="offer-price">₱<%= sePrice %>  <span>₱<%=related[i].price %></span></p>
+                          <% } %>
+    
+                          <div class="rate-stars">
+                              <% if (Number.isNaN(Math.floor(related[i].No_Of_Reviews / related[i].Total_No_Of_Reviews))) { %> 
+                                  <% for(let i=0; i < 5; i++){ %>
+                                      <i class="bx bxs-star nocolor"></i>
+                                  <% } %> 
+                              
+                              <% } else { %> <% let rate = Math.floor(related[i].No_Of_Reviews / related[i].Total_No_Of_Reviews); %>
+                                  <% for(let i = 0; i < rate; i++){ %>
+                                      <i class="bx bxs-star"></i>
+                                  <% } %> 
+                                  <% let rateForNoColor = 5 - rate %> 
+                                  <% for(let i=0; i < rateForNoColor; i++){ %>
+                                      <i class="bx bxs-star nocolor"></i>
+                                  <% } %>
+                              <% } %>
+                          </div>
+                      </div>
+                  </div>
+    
+              <% } %> 
+              <% } %>
+          </div>
+      </section>
+    <!-- -- ======== End Related Products ======= -- -->
+
+    <%- include('../partials/footer'); %>
+    <script src="/js/details.js"></script>
+    <script src="/js/dropdown.js"></script>
+    <script src="https://kit.fontawesome.com/0ff9aa4425.js" crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+  </body>
+</html>

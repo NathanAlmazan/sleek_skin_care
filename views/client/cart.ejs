@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('../partials/head'); %>
+  
+  <body>
+    <%- include('../partials/header'); %>
+     <%if (user.customer_id > 0) {%>
+
+          <section class="container card cart-items" style="margin-top: 150px;">
+
+            <%if (cartShow.length > 0) {%>
+
+            <div class="row justify-content-between align-items-center">
+                <div class="table-responsive" style="padding: 1rem;">
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                              <th scope="col" style="width: 40%; font-weight: 100;">Product</th>
+                              <th scope="col" style="text-align: end; font-weight: 100; min-width: 120px;">Unit Price</th>
+                              <th scope="col" style="text-align: end; font-weight: 100; min-width: 120px;">Quantity</th>
+                              <th scope="col" style="text-align: end; font-weight: 100;">Total</th>
+                              <th scope="col" style="text-align: end; font-weight: 100;">Actions</th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                        <% for(let i = 0; i < cartShow.length; i++){ %>
+
+                            <%let maybawas = 0;%>
+                            <%if(user.customer_position == "Distributor"){%>
+                              <%maybawas =cartShow[i].price - (cartShow[i].price * 0.2); %>
+                            <%} else {%>
+                              <%maybawas =cartShow[i].price - (cartShow[i].price * 0.1); %>
+                            <%} %>
+                            <tr>
+                              <th scope="row">
+                                  <div class="row justify-content-start align-items-center">
+                                      <div class="col-xs-12 col-sm-12 col-md-4">
+                                            <div class="d-flex justify-content-start align-items-center">
+                                                <form>
+                                                    <input type="checkbox" name="<%=cartShow[i].cart_id%>" class="prod-pricee" value="<%=maybawas * cartShow[i].quantity%>" />
+                                                </form>
+                                                <a href="#">
+                                                    <img class="card-img-start" style="height: 120px; min-width: 120px;" src="/products/<%=cartShow[i].prod_img%>" alt="<%=cartShow[i].prod_name %>">
+                                                </a>
+                                            </div>
+                                      </div>
+                                      <div class="col-xs-12 col-sm-12 col-md-7">
+                                        <p class="offer-title" style="word-wrap: break-word; padding-left: 2rem;"><%=cartShow[i].prod_name %></p>
+                                        <p style="font-weight: 100; font-size: 0.8rem; padding-left: 2rem;">Sleek</p>
+                                    </div> 
+                                  </div>
+                              </th>
+                              <td style="text-align: end; vertical-align: middle;">₱<%=maybawas%></td>
+                              <td style="text-align: end; vertical-align: middle;">
+                                  <div class="d-flex justify-content-end align-items-center">
+                                    <a href="/sleekskincare/your-order/update/<%=cartShow[i].prod_id%>" class="btn minus-btn" name="quantity<%=[i]%>" style="display: flex; align-items: center;">
+                                        <i class="fas fa-minus"></i>
+                                    </a>
+                                    <div>
+                                        <input type="text" id="quantity<%=[i]%>" value="<%=cartShow[i].quantity%>" name="quantity" style="width: 50px; text-align: center;">
+                                        <input type="text" name="prodsId" value="<%=cartShow[i].prod_id%>" hidden>          
+                                    </div> 
+                                    <a href="/sleekskincare/your-order/update/<%=cartShow[i].prod_id%>" class="btn plus-btn" name="quantity<%=[i]%>" style="display: flex; align-items: center;">
+                                        <i class="fas fa-plus"></i>
+                                    </a>    
+                              </td>
+                              <td style="text-align: end; vertical-align: middle;">₱<%=maybawas * cartShow[i].quantity%></td>
+                              <td style="text-align: end; vertical-align: middle; font-size: 1.5rem;">
+                                <a href="/sleekskincare/your-order/delete/<%=cartShow[i].prod_id%>">
+                                    <i class="bx bx-x-circle removeItem"></i>
+                                </a>
+                              </td>
+                            </tr>
+                        <%} %>
+                          </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    
+        <section class="container checkout-option">
+            <div class="row justify-content-end align-items-center pt-5 pb-5">
+                <div class="col-xs-12 col-sm-12 col-md-3">
+                    <div class="t-total-all">
+                        <p>Total (<span id="item"></span> item): <span id="info"></span></p>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-4 pr-0">
+                    <div class="d-flex justify-content-md-end justify-content-sm-center align-items-center continue__shopping">
+                        <input type="text" name="ordersIdFromCart" id="IdOrdersCart"  hidden>             
+                        <button class="proceed-cart" id="proceed-cart-button" style="margin: 1rem; padding: 1.5rem; width: 100%;"> Proceed to checkout</button>  
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+    
+
+              <!-- -- ======== Start List Of Products ======= -- -->
+              <section class="container all-products">
+                <div class="section-title">
+                    <h2>Products <span>You May Like</span></h2>
+                </div>
+                <div class="row justify-content-start align-items-start all-products-grid">
+                    <% if (products.length > 0) { %> <% for(let i = 0; i < products.length; i++){ %>
+          
+                        <div class="col-xs-6 col-sm-6 col-md-2 p-2 card" style="width: 100%;">
+                            <a href="/sleekskincare/product-details/<%= products[i].prod_id %>">
+                                <img class="card-img-top" src="/products/<%=products[i].prod_img%>" alt="Card image cap">
+                            </a>
+                            <div class="card-body">
+                                <p class="offer-title"><%= products[i].prod_name%></p>
+          
+                                <% if (user.customer_position == "Distributor") { %> <% let disPrice =products[i].price - (products[i].price * 0.20) %>
+                                    <p class="offer-price">₱<%= disPrice %>  <span>₱<%=products[i].price %></span></p>
+                                <% } else { %> <% let sePrice =products[i].price - (products[i].price * 0.10) %>
+                                    <p class="offer-price">₱<%= sePrice %>  <span>₱<%=products[i].price %></span></p>
+                                <% } %>
+          
+                                <div class="rate-stars">
+                                    <% if (Number.isNaN(Math.floor(products[i].No_Of_Reviews / products[i].Total_No_Of_Reviews))) { %> 
+                                        <% for(let i=0; i < 5; i++){ %>
+                                            <i class="bx bxs-star nocolor"></i>
+                                        <% } %> 
+                                    
+                                    <% } else { %> <% let rate = Math.floor(products[i].No_Of_Reviews / products[i].Total_No_Of_Reviews); %>
+                                        <% for(let i = 0; i < rate; i++){ %>
+                                            <i class="bx bxs-star"></i>
+                                        <% } %> 
+                                        <% let rateForNoColor = 5 - rate %> 
+                                        <% for(let i=0; i < rateForNoColor; i++){ %>
+                                            <i class="bx bxs-star nocolor"></i>
+                                        <% } %>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+          
+                    <% } %> 
+                    <% } %>
+                </div>
+              </section>
+  
+      -->
+      <!-- -- ======== End List Of Products ======= -- -->
+              <% } else { %>
+              <div class="t-empty-basket">
+                <div class="cart-empty-icon">
+                  <i class="bx bx-cart"></i>
+                </div>
+                <div class="cart-empty-section">
+                  <p class="cart-heading">
+                    Your basket is empty!
+                  </p>  
+                  <div class="cart-btns">
+                    <div class="continue__shopping">
+                      <a href="/sleekskincare">Go Shopping Now</a>
+                    </div>
+                  </div>                 
+              </div>
+              </div>
+              <% }%>              
+            </div>
+
+        
+       
+        </div>
+      </div>
+    </section>
+
+    <% } else {%>
+    <section class="cart-empty-section container">
+      <div class="cart-empty-icon">
+        <i class="bx bx-cart"></i>
+      </div>
+      <div class="cart-text">
+        <p class="cart-heading">
+          <strong>Your basket is empty!</strong>
+          <br />
+          Sign In now to see items you added or saved in a previous visit.
+        </p>
+      </div>
+      <div class="cart-button">
+        <a href="/sleekskincare/login" class="btn btn-cart"
+          ><i class="bx bx-left-arrow-alt"></i> Sign Now</a
+        >
+      </div>
+
+
+    </section>
+
+    
+    <% }%>
+   
+    
+    <div class="modal fade" id="no-selected-item-dialog" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">No Selected Item</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <p>You have no selected any items to checkout.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="close-null-dialog" class="btn">Okay</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="less-than-quota-dialog" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Didn't Meet Quota</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="d-flex justify-content-center align-items-center" style="width: 100px; height: 100px; margin-left: 37%;">
+              <img src="/img/kulng.png" alt="cart icon" style="object-fit: cover;"/>
+            </div>
+            <% if(user.customer_position == "Distributor"){%>
+              <p style="word-wrap: break-word;">Hi Kinesa <%=user.customer_fname%>! We're sorry to interrupt but your order didn't meet our criteria as a Distributor. You need to purchase atleast ₱20,000 in order to process your order. Thank you!</p>
+            <%}else{%>
+              <p style="word-wrap: break-word;">Hi Kinesa! We're sorry to interrupt but your order didn't meet our criteria as a Seller. You need to purchase atleast ₱5,000 in order to process your order. Thank you!</p>
+            <%  } %> 
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="close-quota-dialog" class="btn">Okay</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+   <%- include('../partials/footer'); %>
+    
+    <script src="https://kit.fontawesome.com/0ff9aa4425.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="/js/cart.js"></script>
+    <script src="/js/dropdown.js"></script>
+
+  </body>
+</html>
