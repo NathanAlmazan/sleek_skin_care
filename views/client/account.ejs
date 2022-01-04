@@ -4,123 +4,259 @@
   <body>
     <%- include('../partials/header'); %> 
 
-    <section class="cart-section">
-      <div class="container">
-        <div>
-          <div class="cart-form">
-         
-       
-            <div class="account-table">
-       
-              <div class="acc-box">
-                <div class="acc-header">
-                    <span>My Account</span>
-                    <p>Manage and protect your account</p>
-                </div>
-                <form action="/sleekskincare/myaccount" method="post" enctype="multipart/form-data">
-                <div class="acc-body">
-                    <div class="acc-left">
-                      <div class="display_flex">
-                      <div class="field hak">
-                        <div class="label">First Name</div>
-                        <input type="text" id="fname" value="<%=user.customer_fname%>" name="fname"/>
-                      </div>
-                      <div class="field hak ">
-                        <div class="label">Last Name</div>
-                        <input type="text" id="lname" value="<%=user.customer_lname%>" name="lname"/>
-                      </div>
-                    </div>
+    <form action="/sleekskincare/myaccount" method="post" enctype="multipart/form-data">
+      <section class="container card p-3" style="margin-top: 150px;">
+        <div class="flex-column justify-content-start align-items-center">
+          <p style="font-weight: bold; font-size: 1.2rem; margin: 2px;">My Account</p>
+          <p>Manage and protect your account</p>
+        </div>
+        <div class="row justify-content-between align-items-start">
+          <div class="col-sm-12 col-md-4 acc-right">
+            <div class="profile-pic-div profi ">  
+              <% if( user.customer_img == null){%>   
 
-                    <div class="display_flex">
-                      <div class="field hak">
-                        <div class="label">Email Address</div>
-                        <input type="text" id="email" value="<%=user.customer_email%>" name="email"/>
-                      </div>
-                      <div class="field hak ">
-                        <div class="label">City / Area</div>
-                        <select id="area" class="select-1" name="area">
-                          <option style="display: none" value="<%=user.customer_area%>">
-                            &nbsp;&nbsp;<%=user.customer_area%>
-                          </option>
-                        </select>
-                      </div>
-                    </div>
+                <img src="/img/profile.png" id="photo"> 
 
-                   
-                        
+              <%}else{%> 
 
-                         
-                           
-                          
-                                <div class="acc-flex">
-                                        
-                                        <div>
-                                        <button type="button"  class="buton done">Save</button>
-                                          </div>
+                <img src="<%=user.customer_img%>" id="photo">
 
-                                          
-                                            <div>
-                                            <button type="button" class="buton jaja">Cancel</button>
-                                              </div>
-                                    </div>
+              <%}%>  
 
-                                    <div class="modal-acc">
-                                      <div class="modal-a">
-                                        <span class="pass-text">Enter your current password:</span>
-                                       <input type="text" >
-                                        <button id="done" type="submit">Done</button>
-                                        <span class="modal-close"><i class='bx bx-x'></i></span>
-                                      </div>
-                                    </div>
-
-                    </div>
-                    <div class="acc-right">
-                        <div class="profile-pic-div profi ">  
-                    <% if( user.customer_img == null){%>   
-
-                      <img src="/img/profile.png" id="photo"> 
-
-                      <%}else{%> 
-
-                        <img src="/profiles/<%=user.customer_img%>" id="photo">
-
-                        <%}%>
-
-                 
-                          
-                      
-
-                  <input type="file" id="file" name="profile" accept="image/*">
-                  <label for="file" id="uploadBtn">Choose Photo</label>                   
-                        </div>
-                        <div class="t-size">
-                            <span>File size: maximum 1 MB</span>
-        
-                        </div>
-                        
-                    </div>
-                </div>
-              </form>
-              </div>
-          
+              <input type="file" id="file" name="profile" accept="image/*">
+              <label for="file" id="uploadBtn">Choose Photo</label>                   
             </div>
+            <div class="t-size">
+                <span>File size: maximum 1 MB</span>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-8 p-3">
+            <div class="row justify-content-between align-items-start g-2 mt-3 mb-3">
+              <div class="col-xs-12 col-sm-12 col-md-6 mt-2 mb-2">
+                  <label for="exampleFormControlInput1" class="form-label" style="width: 100%;">First Name</label>
+                  <input type="text" id="fname" value="<%=user.customer_fname%>" name="fname" style="width: 100%; height: 40px;"/>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 mt-2 mb-2">
+                  <label for="exampleFormControlInput1" class="form-label" style="width: 100%;">Last Name</label>
+                  <input type="text" id="lname" value="<%=user.customer_lname%>" name="lname"  style="width: 100%; height: 40px;"/>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 mt-2 mb-2">
+                <label for="exampleFormControlInput1" class="form-label" style="width: 100%;">Email Address</label>
+                <input type="email" id="email" value="<%=user.customer_email%>" name="email" style="width: 100%; height: 40px;"/>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 mt-2 mb-2">
+                <label for="exampleFormControlInput1" class="form-label" style="width: 100%;">City/ Area</label>
+                <select id="area" class="select-1" name="area" style="width: 100%; height: 40px;">
+                  <option style="display: none" value="<%=user.customer_area%>">
+                    &nbsp;&nbsp;<%=user.customer_area%>
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-end align-items-center pr-4">
+          <button type="button" class="btn" data-toggle="modal" data-target="#profile-dialog">
+            Save Changes
+          </button>
+        </div>
+      </section>
 
-        
-       
+
+      <div class="modal fade" id="profile-dialog" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Confirm Profile Changes</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <label for="exampleFormControlInput1" class="form-label" style="width: 100%;">Password</label>
+              <input type="text" id="password" style="width: 100%; height: 40px;"/>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn">Confirm Changes</button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="modal-none">
-        <div class="modal-n">
-          <span class="pass-text2">Apply some changes first.</span>
-       
-          <span class="modal-close2"><i class='bx bx-x'></i></span>
+    </form>
+
+
+    <section class="container card p-3" style="margin-top: 20px;">
+      <div class="row justify-content-between align-items-center pr-4 pl-4">
+        <div class="flex-column justify-content-start align-items-center">
+          <p style="font-weight: bold; font-size: 1.2rem; margin: 2px;">Registered Address</p>
+          <p>Manage your resgitered address</p>
         </div>
+        <button type="button" class="btn" data-toggle="modal" data-target="#add-address-dialog">
+          Add Address
+        </button>
+      </div>
+      <div class="row justify-content-center align-items-start p-3 table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Street</th>
+              <th scope="col">Barangay</th>
+              <th scope="col">City</th>
+              <th scope="col">Province</th>
+              <th scope="col">Zip Code</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-size: 0.9rem; vertical-align: middle;">LEVEL 22 Edsa Corner Ortigas Avenue</td>
+              <td style="font-size: 0.9rem; vertical-align: middle;">Obrero</td>
+              <td style="font-size: 0.9rem; vertical-align: middle;">Quezon City</td>
+              <td style="font-size: 0.9rem; vertical-align: middle;">NATIONAL CAPITAL REGION</td>
+              <td style="font-size: 0.9rem; vertical-align: middle;">1113</td>
+              <td style="font-size: 0.9rem;">
+                <button type="button" class="btn" data-toggle="modal" data-target="#edit-address-dialog"><i class="fas fa-edit"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size: 0.9rem; vertical-align: middle;">LEVEL 22 Edsa Corner Ortigas Avenue</td>
+              <td style="font-size: 0.9rem; vertical-align: middle;">Obrero</td>
+              <td style="font-size: 0.9rem; vertical-align: middle;">Quezon City</td>
+              <td style="font-size: 0.9rem; vertical-align: middle;">NATIONAL CAPITAL REGION</td>
+              <td style="font-size: 0.9rem; vertical-align: middle;">1113</td>
+              <td style="font-size: 0.9rem;">
+                <button type="button" class="btn" data-toggle="modal" data-target="#edit-address-dialog"><i class="fas fa-edit"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size: 0.9rem; vertical-align: middle;">LEVEL 22 Edsa Corner Ortigas Avenue</td>
+              <td style="font-size: 0.9rem; vertical-align: middle;">Obrero</td>
+              <td style="font-size: 0.9rem; vertical-align: middle;">Quezon City</td>
+              <td style="font-size: 0.9rem; vertical-align: middle;">NATIONAL CAPITAL REGION</td>
+              <td style="font-size: 0.9rem; vertical-align: middle;">1113</td>
+              <td style="font-size: 0.9rem;">
+                <button type="button" class="btn" data-toggle="modal" data-target="#edit-address-dialog"><i class="fas fa-edit"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>
     
+    <div class="modal fade" id="edit-address-dialog" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Edit Address</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row justify-content-between align-items-start g-2 mt-3 mb-3">
+              <div class="col-xs-12 col-sm-12 col-md-6 mt-2 mb-2">
+                  <label for="exampleFormControlInput1" class="form-label" style="width: 100%;">Region</label>
+                  <select id="region" class="form-select" aria-label="Default select example" style="width: 100%; height: 40px; padding-left: 0.8rem;">
+                      <option style="display: none" value="">Region</option>
+                  </select>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 mt-2 mb-2">
+                  <label for="exampleFormControlInput1" class="form-label" style="width: 100%;">Province</label>
+                  <select id="province" class="form-select" aria-label="Default select example" style="width: 100%; height: 40px; padding-left: 0.8rem;">
+                    <option style="display: none" value="">Province</option> 
+                  </select>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 mt-2 mb-2">
+                  <label for="exampleFormControlInput1" class="form-label" style="width: 100%;">Province</label>
+                  <select id="city" class="form-select" aria-label="Default select example" style="width: 100%; height: 40px; padding-left: 0.8rem;">
+                    <option style="display: none" value="">City</option>
+                  </select>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 mt-2 mb-2">
+                  <label for="exampleFormControlInput1" class="form-label" style="width: 100%;">Province</label>
+                  <select id="barangay" class="form-select" aria-label="Default select example" style="width: 100%; height: 40px; padding-left: 0.8rem;">
+                    <option style="display: none" value="">Barangay</option>
+                  </select>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 mt-2 mb-2">
+                  <label for="exampleFormControlInput1" class="form-label">Address</label>
+                  <input id="street" type="text" class="form-control" id="exampleFormControlInput1" placeholder="Street Name, Building, House no.">
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 mt-2 mb-2">
+                  <label for="exampleFormControlInput1" class="form-label">Zip Code</label>
+                  <input id="zipcode" type="number" class="form-control" id="exampleFormControlInput1">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="add-address-dialog" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Add Address</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row justify-content-between align-items-start g-2 mt-3 mb-3">
+              <div class="col-xs-12 col-sm-12 col-md-6 mt-2 mb-2">
+                  <label for="exampleFormControlInput1" class="form-label" style="width: 100%;">Region</label>
+                  <select id="region" class="form-select" aria-label="Default select example" style="width: 100%; height: 40px; padding-left: 0.8rem;">
+                      <option style="display: none" value="">Region</option>
+                  </select>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 mt-2 mb-2">
+                  <label for="exampleFormControlInput1" class="form-label" style="width: 100%;">Province</label>
+                  <select id="province" class="form-select" aria-label="Default select example" style="width: 100%; height: 40px; padding-left: 0.8rem;">
+                    <option style="display: none" value="">Province</option> 
+                  </select>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 mt-2 mb-2">
+                  <label for="exampleFormControlInput1" class="form-label" style="width: 100%;">Province</label>
+                  <select id="city" class="form-select" aria-label="Default select example" style="width: 100%; height: 40px; padding-left: 0.8rem;">
+                    <option style="display: none" value="">City</option>
+                  </select>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 mt-2 mb-2">
+                  <label for="exampleFormControlInput1" class="form-label" style="width: 100%;">Province</label>
+                  <select id="barangay" class="form-select" aria-label="Default select example" style="width: 100%; height: 40px; padding-left: 0.8rem;">
+                    <option style="display: none" value="">Barangay</option>
+                  </select>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 mt-2 mb-2">
+                  <label for="exampleFormControlInput1" class="form-label">Address</label>
+                  <input id="street" type="text" class="form-control" id="exampleFormControlInput1" placeholder="Street Name, Building, House no.">
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 mt-2 mb-2">
+                  <label for="exampleFormControlInput1" class="form-label">Zip Code</label>
+                  <input id="zipcode" type="number" class="form-control" id="exampleFormControlInput1">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn">Add New Address</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <%- include('../partials/footer'); %>
+    <script src="https://kit.fontawesome.com/0ff9aa4425.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
     <script src="/js/image.js"></script>
     <script src="/js/area.js"></script>
     <script src="/js/dropdown.js"></script>

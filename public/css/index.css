@@ -1812,7 +1812,6 @@ input[type="checkbox"]:checked:after {
 .profile-pic-div {
   height: 100px;
   width: 100px;
-  margin: 50px 0 0 170px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
   overflow: hidden;
@@ -2825,7 +2824,7 @@ form .textarea textarea {
 }
 
 .acc-right {
-  border-left: 0.0625rem solid #efefef;
+  border-right: 0.0625rem solid lightgrey;
 }
 /* profile */
 .acc-right .profi {

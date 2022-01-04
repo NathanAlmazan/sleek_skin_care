@@ -3,6 +3,7 @@ const prisma = require("../models/prisma");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
+const { post_image } = require("../cloudinary/cloudConfig");
 require("dotenv").config();
 // const messagebird = require("messagebird")("zTuEV2Uw8PRbtbcXKgjrfplyb");
 
@@ -212,6 +213,7 @@ exports.post_signupDetails1 = async (req, res) => {
     res.send({ msg: "This field is required" });
   } else {
     twilio.verify
+      // eslint-disable-next-line no-undef
       .services(process.env.SERVICEID)
       .verificationChecks.create({
         to: `+63${phoneno}`,
@@ -763,15 +765,6 @@ exports.get_home = async (req, res) => {
 
     });
 
-    const user = await prisma.tblcustomer.findMany({
-      where: {
-        customer_email: 'nathan@gmail.com'
-      },
-      include: {
-        tblcart: true
-      }
-    })
-
     const reviews = await prisma.tblratings.findMany({
       include: {
         tblcustomer: {
@@ -1126,11 +1119,9 @@ exports.get_account = (req, res) => {
 exports.post_account = async (req, res) => {
   const { fname, lname, area, email } = req.body;
 
-  let prof_img;
-  let uploadPath;
-  prof_img = req.files.profile;
   //all the info that the user put from the input fields will insert to tblcustomer table
-  if (!prof_img) {
+  console.log(req.files.profile);
+  if (!req.files.profile) {
     db.query(
       "UPDATE tblcustomer SET  customer_fname = $1, customer_lname= $2, customer_email = $3, customer_area = $4 WHERE customer_id= $5",
       [fname, lname, email, area, req.user.customer_id],
@@ -1143,27 +1134,29 @@ exports.post_account = async (req, res) => {
       }
     );
   } else {
-    //this will get the user profile and put it to the upload folder
+    //this will get the user profile and upload it to cloudinary
+    //first the funtion gets the file buffer on request
+    //then it post the file in cloudinary
+    //the cloudinary thens return the url of the image and we save it in the database
 
-    uploadPath = "upload/profiles/" + prof_img.name;
-
-    prof_img.mv(uploadPath, function (err) {
-      if (err) return res.status(500).send(err);
-    });
-
-    console.log(prof_img);
-
-    db.query(
-      "UPDATE tblcustomer SET  customer_fname = $1, customer_lname= $2, customer_email = $3, customer_area = $4, customer_img = $5 WHERE customer_id=$6",
-      [fname, lname, email, area, prof_img.name, req.user.customer_id],
-      (error, results) => {
-        if (error) {
-          console.log(error);
-        } else {
-          res.redirect("/sleekskincare/myaccount");
-        }
+    post_image(req.files.profile.data, req.files.profile.name, (result, error) => {
+      if (error) {
+        console.log(error);
+      } else {
+        db.query(
+          "UPDATE tblcustomer SET  customer_fname = $1, customer_lname= $2, customer_email = $3, customer_area = $4, customer_img = $5 WHERE customer_id=$6",
+          [fname, lname, email, area, result, req.user.customer_id],
+          (error, results) => {
+            if (error) {
+              console.log(error);
+            } else {
+              res.redirect("/sleekskincare/myaccount");
+            }
+          }
+        );
       }
-    );
+    })
+   
   }
 };
 
