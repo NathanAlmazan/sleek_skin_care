@@ -130,7 +130,7 @@
                   <div class="col-sm-3 profile-img">
                     <% const imageURL = comment[i].tblcustomer.customer_img; %> 
                     <% if (imageURL != null) { %> 
-                      <img src="/profiles/<%=imageURL%>" alt="<%=imageURL%>"/>
+                      <img src="<%=imageURL%>" alt="<%=imageURL%>"/>
                     <% } else { %> 
                       <img src="/profiles/dummyProfile.png" alt="/profiles/dummyProfile.png"/>
                     <% } %> 
